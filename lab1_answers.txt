@@ -1,0 +1,417 @@
+TDDD12 - Lab 1, gusby403 & filma650
+
+Question 1: List all employees
+
+select * from jbemployee;
+
++------+--------------------+--------+---------+-----------+-----------+
+| id   | name               | salary | manager | birthyear | startyear |
++------+--------------------+--------+---------+-----------+-----------+
+|   10 | Ross, Stanley      |  15908 |     199 |      1927 |      1945 |
+|   11 | Ross, Stuart       |  12067 |    NULL |      1931 |      1932 |
+|   13 | Edwards, Peter     |   9000 |     199 |      1928 |      1958 |
+|   26 | Thompson, Bob      |  13000 |     199 |      1930 |      1970 |
+|   32 | Smythe, Carol      |   9050 |     199 |      1929 |      1967 |
+|   33 | Hayes, Evelyn      |  10100 |     199 |      1931 |      1963 |
+|   35 | Evans, Michael     |   5000 |      32 |      1952 |      1974 |
+|   37 | Raveen, Lemont     |  11985 |      26 |      1950 |      1974 |
+|   55 | James, Mary        |  12000 |     199 |      1920 |      1969 |
+|   98 | Williams, Judy     |   9000 |     199 |      1935 |      1969 |
+|  129 | Thomas, Tom        |  10000 |     199 |      1941 |      1962 |
+|  157 | Jones, Tim         |  12000 |     199 |      1940 |      1960 |
+|  199 | Bullock, J.D.      |  27000 |    NULL |      1920 |      1920 |
+|  215 | Collins, Joanne    |   7000 |      10 |      1950 |      1971 |
+|  430 | Brunet, Paul C.    |  17674 |     129 |      1938 |      1959 |
+|  843 | Schmidt, Herman    |  11204 |      26 |      1936 |      1956 |
+|  994 | Iwano, Masahiro    |  15641 |     129 |      1944 |      1970 |
+| 1110 | Smith, Paul        |   6000 |      33 |      1952 |      1973 |
+| 1330 | Onstad, Richard    |   8779 |      13 |      1952 |      1971 |
+| 1523 | Zugnoni, Arthur A. |  19868 |     129 |      1928 |      1949 |
+| 1639 | Choy, Wanda        |  11160 |      55 |      1947 |      1970 |
+| 2398 | Wallace, Maggie J. |   7880 |      26 |      1940 |      1959 |
+| 4901 | Bailey, Chas M.    |   8377 |      32 |      1956 |      1975 |
+| 5119 | Bono, Sonny        |  13621 |      55 |      1939 |      1963 |
+| 5219 | Schwarz, Jason B.  |  13374 |      33 |      1944 |      1959 |
++------+--------------------+--------+---------+-----------+-----------+
+
+
+Question 2: List the name of all departments in alphabetical order
+
+select name from jbdept
+order by name;
+
++------------------+
+| name             |
++------------------+
+| Bargain          |
+| Book             |
+| Candy            |
+| Children's       |
+| Children's       |
+| Furniture        |
+| Giftwrap         |
+| Jewelry          |
+| Junior Miss      |
+| Junior's         |
+| Linens           |
+| Major Appliances |
+| Men's            |
+| Sportswear       |
+| Stationary       |
+| Toys             |
+| Women's          |
+| Women's          |
+| Women's          |
++------------------+
+'
+
+Question 3: What parts are not in store?
+
+select * from jbparts
+where qoh = 0;
+
++----+-------------------+-------+--------+------+
+| id | name              | color | weight | qoh  |
++----+-------------------+-------+--------+------+
+| 11 | card reader       | gray  |    327 |    0 |
+| 12 | card punch        | gray  |    427 |    0 |
+| 13 | paper tape reader | black |    107 |    0 |
+| 14 | paper tape punch  | black |    147 |    0 |
++----+-------------------+-------+--------+------+
+
+
+Question 4: Which employees have a salary between 9000 (included) and 10000 (included)?
+
+select * from jbemployee
+where salary < 10001 and salary > 8999;
+
++-----+----------------+--------+---------+-----------+-----------+
+| id  | name           | salary | manager | birthyear | startyear |
++-----+----------------+--------+---------+-----------+-----------+
+|  13 | Edwards, Peter |   9000 |     199 |      1928 |      1958 |
+|  32 | Smythe, Carol  |   9050 |     199 |      1929 |      1967 |
+|  98 | Williams, Judy |   9000 |     199 |      1935 |      1969 |
+| 129 | Thomas, Tom    |  10000 |     199 |      1941 |      1962 |
++-----+----------------+--------+---------+-----------+-----------+
+
+
+Question 5: What was the age of each employee when they started working
+
+select name, startyear-birthyear starting_age from jbemployee;
+
++--------------------+--------------+
+| name               | starting_age |
++--------------------+--------------+
+| Ross, Stanley      |           18 |
+| Ross, Stuart       |            1 |
+| Edwards, Peter     |           30 |
+| Thompson, Bob      |           40 |
+| Smythe, Carol      |           38 |
+| Hayes, Evelyn      |           32 |
+| Evans, Michael     |           22 |
+| Raveen, Lemont     |           24 |
+| James, Mary        |           49 |
+| Williams, Judy     |           34 |
+| Thomas, Tom        |           21 |
+| Jones, Tim         |           20 |
+| Bullock, J.D.      |            0 |
+| Collins, Joanne    |           21 |
+| Brunet, Paul C.    |           21 |
+| Schmidt, Herman    |           20 |
+| Iwano, Masahiro    |           26 |
+| Smith, Paul        |           21 |
+| Onstad, Richard    |           19 |
+| Zugnoni, Arthur A. |           21 |
+| Choy, Wanda        |           23 |
+| Wallace, Maggie J. |           19 |
+| Bailey, Chas M.    |           19 |
+| Bono, Sonny        |           24 |
+| Schwarz, Jason B.  |           15 |
++--------------------+--------------+
+
+Question 6: Which employees have a last name ending with "son"?
+
+select name from jbemployee
+where name like '%son,%';
+
++---------------+
+| name          |
++---------------+
+| Thompson, Bob |
++---------------+
+
+Question 7: Which items have been delivered by a supplier called 'Fisher-Price'? (Use where)
+
+
+select * from jbitem
+where supplier = (
+	select id from jbsupplier
+	where name = 'Fisher-Price'
+);
+
++-----+-----------------+------+-------+------+----------+
+| id  | name            | dept | price | qoh  | supplier |
++-----+-----------------+------+-------+------+----------+
+|  43 | Maze            |   49 |   325 |  200 |       89 |
+| 107 | The 'Feel' Book |   35 |   225 |  225 |       89 |
+| 119 | Squeeze Ball    |   49 |   250 |  400 |       89 |
++-----+-----------------+------+-------+------+----------+
+
+
+Question 8: Which items have been delivered by a supplier called 'Fisher-Price'? (use join)
+
+select jbitem.* from jbsupplier
+inner join jbitem
+on jbitem.supplier = jbsupplier.id
+where jbsupplier.name = 'Fisher-Price';
+
++-----+-----------------+------+-------+------+----------+
+| id  | name            | dept | price | qoh  | supplier |
++-----+-----------------+------+-------+------+----------+
+|  43 | Maze            |   49 |   325 |  200 |       89 |
+| 107 | The 'Feel' Book |   35 |   225 |  225 |       89 |
+| 119 | Squeeze Ball    |   49 |   250 |  400 |       89 |
++-----+-----------------+------+-------+------+----------+
+
+
+Question 9: What is the name and color of the parts that are heavier than a card reader? (use where)
+
+select * from jbparts
+where weight > (
+	select weight from jbparts
+	where name = 'card reader'
+);
+
++----+--------------+--------+--------+------+
+| id | name         | color  | weight | qoh  |
++----+--------------+--------+--------+------+
+|  3 | disk drive   | black  |    685 |    2 |
+|  4 | tape drive   | black  |    450 |    4 |
+|  6 | line printer | yellow |    578 |    3 |
+| 12 | card punch   | gray   |    427 |    0 |
++----+--------------+--------+--------+------+
+
+Question 10: What is the name and color of the parts that are heavier than a card reader? (use join)
+
+select t1.* from jbparts t1
+join jbparts t2
+on t1.weight > t2.weight
+where t2.name = 'card reader';
+
++----+--------------+--------+--------+------+
+| id | name         | color  | weight | qoh  |
++----+--------------+--------+--------+------+
+|  3 | disk drive   | black  |    685 |    2 |
+|  4 | tape drive   | black  |    450 |    4 |
+|  6 | line printer | yellow |    578 |    3 |
+| 12 | card punch   | gray   |    427 |    0 |
++----+--------------+--------+--------+------+
+
+Question 11: What is the average weight of black parts?
+
+select AVG(weight) from jbparts where color = 'black';
+
++-------------+
+| AVG(weight) |
++-------------+
+|    347.2500 |
++-------------+
+
+Question 12: What is the total weight of all parts that each supplier in Massachusetts (Mass) has delivered?
+
+select jbsupplier.name, SUM(jbsupply.quan * jbparts.weight)
+from jbparts
+join jbsupply
+on jbsupply.part = jbparts.id
+join jbsupplier
+on jbsupplier.id = jbsupply.supplier
+join jbcity
+on jbsupplier.city = jbcity.id
+where jbcity.state = 'Mass'
+group by jbsupplier.name;
+
++--------------+-------------------------------------+
+| name         | SUM(jbsupply.quan * jbparts.weight) |
++--------------+-------------------------------------+
+| DEC          |                                3120 |
+| Fisher-Price |                             1135000 |
++--------------+-------------------------------------+
+
+Question 13: Create a new relation (a table) that contains the items that cost less than the average price for items!
+
+create table jbcheap(
+	id int auto_increment, item int,
+	primary key (id),
+	constraint fk_item foreign key (item) references jbitem(id)
+);
+insert into jbcheap(item)
+select id from jbitem
+where jbitem.price < (
+	select avg(price)
+	from jbitem
+);
+select jbitem.* from jbitem
+join jbcheap
+on jbitem.id = jbcheap.item;
+
++-----+-----------------+------+-------+------+----------+
+| id  | name            | dept | price | qoh  | supplier |
++-----+-----------------+------+-------+------+----------+
+|  11 | Wash Cloth      |    1 |    75 |  575 |      213 |
+|  19 | Bellbottoms     |   43 |   450 |  600 |       33 |
+|  21 | ABC Blocks      |    1 |   198 |  405 |      125 |
+|  23 | 1 lb Box        |   10 |   215 |  100 |       42 |
+|  25 | 2 lb Box, Mix   |   10 |   450 |   75 |       42 |
+|  26 | Earrings        |   14 |  1000 |   20 |      199 |
+|  43 | Maze            |   49 |   325 |  200 |       89 |
+| 106 | Clock Book      |   49 |   198 |  150 |      125 |
+| 107 | The 'Feel' Book |   35 |   225 |  225 |       89 |
+| 118 | Towels, Bath    |   26 |   250 | 1000 |      213 |
+| 119 | Squeeze Ball    |   49 |   250 |  400 |       89 |
+| 120 | Twin Sheet      |   26 |   800 |  750 |      213 |
+| 165 | Jean            |   65 |   825 |  500 |       33 |
+| 258 | Shirt           |   58 |   650 | 1200 |       33 |
++-----+-----------------+------+-------+------+----------+
+
+
+Question 14: Create a view that contains the items that cost less than the average price for items
+
+create view jbcheapview as
+select * from jbitem
+where jbitem.price < (
+	select avg(price)
+	from jbitem
+);
+select * from jbcheapview;
+
++-----+-----------------+------+-------+------+----------+
+| id  | name            | dept | price | qoh  | supplier |
++-----+-----------------+------+-------+------+----------+
+|  11 | Wash Cloth      |    1 |    75 |  575 |      213 |
+|  19 | Bellbottoms     |   43 |   450 |  600 |       33 |
+|  21 | ABC Blocks      |    1 |   198 |  405 |      125 |
+|  23 | 1 lb Box        |   10 |   215 |  100 |       42 |
+|  25 | 2 lb Box, Mix   |   10 |   450 |   75 |       42 |
+|  26 | Earrings        |   14 |  1000 |   20 |      199 |
+|  43 | Maze            |   49 |   325 |  200 |       89 |
+| 106 | Clock Book      |   49 |   198 |  150 |      125 |
+| 107 | The 'Feel' Book |   35 |   225 |  225 |       89 |
+| 118 | Towels, Bath    |   26 |   250 | 1000 |      213 |
+| 119 | Squeeze Ball    |   49 |   250 |  400 |       89 |
+| 120 | Twin Sheet      |   26 |   800 |  750 |      213 |
+| 165 | Jean            |   65 |   825 |  500 |       33 |
+| 258 | Shirt           |   58 |   650 | 1200 |       33 |
++-----+-----------------+------+-------+------+----------+
+
+
+Question 15: What is the difference between 13 and 14? What's the difference between using tables and views?
+
+13 uses a table, 14 uses a view.
+Views take almost no space, since they only store the neccessary queries. It's possible to merge data from different tables into one virtual table which can simplify queries.
+Tables are required to actually store data, but take more space (since they actually store data), which is what they do.
+
+A scenario when using a table is more useful is when you want to store data somewhere.
+
+
+Question 16: Create a view that calculates the total cost of each sale by considering price and quantity. (Using where)
+
+create view jbsaleview as
+select debit, sum(price * quantity)
+from jbsale, jbitem
+where jbsale.item = jbitem.id
+group by debit;
+select * from jbsaleview;
+
++--------+-----------------------+
+| debit  | sum(price * quantity) |
++--------+-----------------------+
+| 100581 |                  2050 |
+| 100582 |                  1000 |
+| 100586 |                 13446 |
+| 100592 |                   650 |
+| 100593 |                   430 |
+| 100594 |                  3295 |
++--------+-----------------------+
+
+
+Question 17: Create a view that calculates the total cost of each sale by considering price and quantity. (Using join)
+
+create view jbsaleview2 as
+select debit, sum(price * quantity)
+from jbsale
+inner join jbitem
+on item = id
+group by debit;
+select * from jbsaleview2;
+
++--------+-----------------------+
+| debit  | sum(price * quantity) |
++--------+-----------------------+
+| 100581 |                  2050 |
+| 100582 |                  1000 |
+| 100586 |                 13446 |
+| 100592 |                   650 |
+| 100593 |                   430 |
+| 100594 |                  3295 |
++--------+-----------------------+
+
+
+Question 18a: Remove all suppliers in Los Angeles from the table JBSUPPLIER.
+
+delete from jbsupplier
+where city = (
+	select id from jbcity
+	where name = 'Los Angeles'
+);
+
+ERROR 1451 (23000): Cannot delete or update a parent row: a foreign key constraint fails (`gusby403`.`jbitem`, CONSTRAINT `fk_item_supplier` FOREIGN KEY (`supplier`) REFERENCES `jbsupplier` (`id`))
+
+The error message means that it's not possible to delete an entry that is referenced from anothe table, without breaking the reference. If one wants to remove such an entry, the referring item must first be changed or removed.
+
+
+Question 18b: List the tuples which make the delete-statement fail using SQL.
+
+/* We think that this command should work, but we could not test it on IDAs MySql server:*/
+select * from information_table.table_constraints
+where constraint_schema = 'fk_item_supplier';
+
+/* A command that works (but isn't as neat):*/
+select jbitem.* from jbitem
+join jbsupplier
+on jbsupplier.id = jbitem.supplier
+join jbcity
+on jbcity.id = jbsupplier.city
+where jbcity.name = 'Los Angeles';
+
++-----+-----------+------+-------+------+----------+
+| id  | name      | dept | price | qoh  | supplier |
++-----+-----------+------+-------+------+----------+
+|  26 | Earrings  |   14 |  1000 |   20 |      199 |
+| 115 | Gold Ring |   14 |  4995 |   10 |      199 |
++-----+-----------+------+-------+------+----------+
+
+
+Question 19: Redefine jbsale_supply to also consider suppliers that have delivered items that have never been sold.
+
+create view jbsale_supply(supplier, item, quantity) as
+select jbsupplier.name, jbitem.name, jbsale.quantity
+from jbsupplier
+join jbitem
+on jbitem.supplier = jbsupplier.id
+left join jbsale
+on jbsale.item = jbitem.id;
+select supplier, sum(quantity) sum from jbsale_supply
+group by supplier;
+
++--------------+------+
+| supplier     | sum  |
++--------------+------+
+| Cannon       |    6 |
+| Fisher-Price | NULL |
+| Koret        |    1 |
+| Levi-Strauss |    1 |
+| Playskool    |    2 |
+| White Stag   |    4 |
+| Whitman's    |    2 |
++--------------+------+
+
