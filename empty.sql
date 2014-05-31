@@ -1,0 +1,10 @@
+DELETE FROM Booking;
+DELETE FROM Contact;
+DELETE FROM Passenger;
+DELETE FROM Payment;
+DELETE FROM Flight;
+DELETE FROM Route;
+DELETE FROM Airport;
+DELETE FROM Airplane;
+DELETE FROM AirplaneModel;
+DELETE FROM WeekdayPriceFactor;
