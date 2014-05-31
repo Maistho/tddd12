@@ -1,37 +1,56 @@
 CREATE TABLE AirplaneModel
 (
-	id INT NOT NULL AUTO_INCREMENT, seats INT NOT NULL, name VARCHAR(32) NOT NULL,
+	id INT NOT NULL AUTO_INCREMENT,
+	seats INT NOT NULL,
+	name VARCHAR(32) NOT NULL,
 	PRIMARY KEY(id)
 );
 
 CREATE TABLE Airplane
 (
-	id INT NOT NULL AUTO_INCREMENT, model INT NOT NULL,
+	id INT NOT NULL AUTO_INCREMENT,
+	model INT NOT NULL,
 	PRIMARY KEY(id)
 );
 
 CREATE TABLE Airport
 (
-	id INT NOT NULL AUTO_INCREMENT, name VARCHAR(32) NOT NULL, short_name VARCHAR(3) NOT NULL,
+	id INT NOT NULL AUTO_INCREMENT,
+	name VARCHAR(32) NOT NULL,
+	short_name VARCHAR(3) NOT NULL,
 	PRIMARY KEY(id)
 );
 
 CREATE TABLE Route
 (
-	id INT NOT NULL AUTO_INCREMENT, price_factor DOUBLE NOT NULL, departure INT NOT NULL, destination INT NOT NULL,
+	id INT NOT NULL AUTO_INCREMENT,
+	price_factor DOUBLE NOT NULL,
+	departure INT NOT NULL,
+	destination INT NOT NULL,
 	PRIMARY KEY(id)
 );
 
 CREATE TABLE Flight
 (
-	id INT NOT NULL AUTO_INCREMENT, name VARCHAR(8) NOT NULL, departure_datetime DATETIME NOT NULL,
-	arrival_datetime DATETIME NOT NULL, route INT NOT NULL, airplane INT NOT NULL,
+	id INT NOT NULL AUTO_INCREMENT,
+	name VARCHAR(8) NOT NULL,
+	departure_datetime DATETIME NOT NULL,
+	arrival_datetime DATETIME NOT NULL,
+	route INT NOT NULL,
+	airplane INT NOT NULL,
 	PRIMARY KEY(id)
 );
 
 CREATE TABLE Payment
 (
-	id INT NOT NULL AUTO_INCREMENT, card_holder VARCHAR(256) NOT NULL, card_number INT NOT NULL, amount INT NOT NULL,
+	id INT NOT NULL AUTO_INCREMENT,
+	card_holder VARCHAR(256) NOT NULL,
+
+	# Must encrypt PA-DSS Version 3
+	card_number INT NOT NULL,
+
+	card_expiry DATE NOT NULL,
+	amount INT NOT NULL,
 	PRIMARY KEY(id)
 );
 
@@ -39,7 +58,7 @@ CREATE TABLE Passenger
 (
 	id INT NOT NULL AUTO_INCREMENT,
 	fullname VARCHAR(256) NOT NULL,
-	ticket_number INT,
+	ticket_number VARCHAR(16),
 	birthdate DATE NOT NULL,
 	booking INT NOT NULL,
 	PRIMARY KEY(id)
@@ -64,7 +83,8 @@ CREATE TABLE Booking
 
 CREATE TABLE WeekdayPriceFactor
 (
-	weekday INT NOT NULL, price_factor DOUBLE NOT NULL,
+	weekday INT NOT NULL,
+	price_factor DOUBLE NOT NULL,
 	PRIMARY KEY(weekday)
 );
 

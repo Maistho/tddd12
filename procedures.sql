@@ -2,40 +2,92 @@ DROP PROCEDURE IF EXISTS create_reservation;
 DROP PROCEDURE IF EXISTS add_passenger;
 DROP PROCEDURE IF EXISTS add_contact;
 DROP PROCEDURE IF EXISTS add_passenger_as_contact;
+DROP PROCEDURE IF EXISTS add_payment;
+DROP FUNCTION IF EXISTS check_seats;
 
 DELIMITER //
 
-CREATE PROCEDURE create_reservation
-(IN flight_id INT)
+CREATE FUNCTION check_seats
+(flight INT, no_seats INT)
+RETURNS BOOL
+READS SQL DATA
 BEGIN
-INSERT INTO Booking(flight)
-VALUES(flight_id);
+	IF no_seats < 1 THEN
+		RETURN 0;
+	ELSE
+		RETURN (
+			(
+				SELECT available_seats FROM Seats
+				WHERE id = flight
+			) - no_seats >= 0
+		);
+	END IF;
+END //
+
+CREATE PROCEDURE create_reservation
+(IN flight INT)
+BEGIN
+	INSERT INTO Booking(flight)
+	VALUES(flight);
 END //
 
 CREATE PROCEDURE add_passenger
 (
-	IN booking_id INT, name VARCHAR(256), birth DATE,
-	OUT passenger_id INT)
+	IN booking INT, name VARCHAR(256), birth DATE,
+	OUT passenger INT)
 BEGIN
-	INSERT INTO Passenger(fullname, birthdate, booking)
-	VALUES(name, birth, booking_id);
-	SET passenger_id = LAST_INSERT_ID();
+	IF check_seats((
+		SELECT Flight.id FROM Booking
+		JOIN Flight
+		ON Flight.id = Booking.flight
+		WHERE Booking.id = booking
+		), 1) THEN
+		INSERT INTO Passenger(fullname, birthdate, booking)
+		VALUES(name, birth, booking);
+		SET passenger = LAST_INSERT_ID();
+	ELSE
+		SET passenger = -1;
+	END IF;
 END //
 
 CREATE PROCEDURE add_contact
-(IN booking_id INT, passenger_id INT, email VARCHAR(254), phone INT)
+(IN booking INT, passenger INT, email VARCHAR(254), phone INT)
 BEGIN
 	INSERT INTO Contact(id, email, phone_number)
-	VALUES(passenger_id, email, phone);
-	UPDATE Booking SET Contact = passenger_id
-	WHERE id = booking_id;
+	VALUES(passenger, email, phone);
+	UPDATE Booking
+	SET Contact = passenger
+	WHERE id = booking;
 END //
 
 CREATE PROCEDURE add_passenger_as_contact
-(IN booking_id INT, name VARCHAR(256), birth DATE, email VARCHAR(254), phone INT)
+(IN booking INT, name VARCHAR(256), birth DATE, email VARCHAR(254), phone INT)
 BEGIN
-	CALL add_passenger(booking_id, name, birth, @passenger_id);
-	CALL add_contact(booking_id, @passenger_id, email, phone);
+	CALL add_passenger(booking, name, birth, @passenger);
+	CALL add_contact(booking, @passenger, email, phone);
 END //
+
+CREATE PROCEDURE add_payment
+(IN booking INT, card_holder VARCHAR(256),
+	card_number INT, card_expiry DATE)
+BEGIN
+	IF (
+		SELECT Booking.contact FROM Booking
+		JOIN Passenger
+		ON Passenger.id = Booking.contact
+		WHERE Booking.id = booking AND Passenger.booking = booking
+		) IS NOT NULL
+		THEN
+		INSERT INTO Payment ( card_holder, card_number, card_expiry, amount)
+		VALUES              ( card_holder, card_number, card_expiry, amount);
+		UPDATE Booking
+		SET payment = LAST_INSERT_ID()
+		WHERE id = booking;
+	ELSE
+		SIGNAL SQLSTATE '99999'
+		SET MESSAGE_TEXT = 'Payment not completed';
+	END IF;
+END //
+
 
 DELIMITER ;
