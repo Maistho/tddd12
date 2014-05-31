@@ -58,7 +58,7 @@ CREATE TABLE Passenger
 (
 	id INT NOT NULL AUTO_INCREMENT,
 	fullname VARCHAR(256) NOT NULL,
-	ticket_number VARCHAR(16),
+	ticket_number VARCHAR(16) UNIQUE,
 	birthdate DATE NOT NULL,
 	booking INT NOT NULL,
 	PRIMARY KEY(id)
@@ -121,3 +121,29 @@ ADD CONSTRAINT fk_Booking_payment
 	FOREIGN KEY(payment) REFERENCES Payment(id),
 ADD CONSTRAINT fk_Booking_contact
 	FOREIGN KEY(contact) REFERENCES Contact(id);
+
+CREATE VIEW Seats AS
+SELECT Flight.id, AirplaneModel.seats - COUNT(Passenger.id) AS available_seats
+FROM Flight
+JOIN Airplane
+ON Flight.airplane = Airplane.id
+JOIN AirplaneModel
+ON AirplaneModel.id = Airplane.model
+LEFT JOIN Booking
+ON Booking.flight = Flight.id
+AND Booking.payment IS NOT NULL
+LEFT JOIN Passenger
+ON Passenger.booking = Booking.id
+GROUP BY Flight.id;
+
+CREATE VIEW FlightSearch AS
+SELECT Seats.id, Seats.available_seats, Destination.short_name AS destination, Departure.short_name AS departure, Flight.departure_datetime
+FROM Seats
+JOIN Flight
+ON Flight.id = Seats.id
+JOIN Route
+ON Route.id = Flight.route
+JOIN Airport AS Destination
+ON Destination.id = Route.destination
+JOIN Airport AS Departure
+ON Departure.id = Route.departure;

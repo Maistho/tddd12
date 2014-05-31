@@ -3,6 +3,7 @@ DROP PROCEDURE IF EXISTS add_passenger;
 DROP PROCEDURE IF EXISTS add_contact;
 DROP PROCEDURE IF EXISTS add_passenger_as_contact;
 DROP PROCEDURE IF EXISTS add_payment;
+DROP PROCEDURE IF EXISTS search_flights;
 DROP FUNCTION IF EXISTS check_seats;
 
 DELIMITER //
@@ -77,6 +78,18 @@ BEGIN
 		ON Passenger.id = Booking.contact
 		WHERE Booking.id = booking AND Passenger.booking = booking
 		) IS NOT NULL
+		AND
+		check_seats((
+				SELECT Flight.id FROM Booking
+				JOIN Flight
+				ON Flight.id = Booking.flight
+				WHERE Booking.id = booking
+			),
+			(
+				SELECT COUNT(*) FROM Passenger
+				WHERE Passenger.booking = booking
+			)
+		)
 		THEN
 		INSERT INTO Payment ( card_holder, card_number, card_expiry, amount)
 		VALUES              ( card_holder, card_number, card_expiry, amount);
@@ -88,6 +101,22 @@ BEGIN
 		SET MESSAGE_TEXT = 'Payment not completed';
 	END IF;
 END //
+
+CREATE PROCEDURE search_flights
+(
+	IN departure VARCHAR(3),
+	destination VARCHAR(3),
+	no_passengers INT,
+	flight_date DATE
+)
+BEGIN
+	SELECT * FROM FlightSearch
+	WHERE FlightSearch.departure = departure
+	AND FlightSearch.destination = destination
+	AND FlightSearch.available_seats >= no_passengers
+	AND DATE(FlightSearch.departure_datetime) = flight_date;
+END //
+
 
 
 DELIMITER ;
