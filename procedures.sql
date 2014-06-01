@@ -5,6 +5,7 @@ DROP PROCEDURE IF EXISTS add_passenger_as_contact;
 DROP PROCEDURE IF EXISTS add_payment;
 DROP PROCEDURE IF EXISTS search_flights;
 DROP FUNCTION IF EXISTS check_seats;
+DROP FUNCTION IF EXISTS check_booking_seats;
 
 DELIMITER //
 
@@ -25,6 +26,22 @@ BEGIN
 	END IF;
 END //
 
+CREATE FUNCTION check_booking_seats
+(booking INT, extra INT)
+RETURNS BOOL
+READS SQL DATA
+BEGIN
+	RETURN check_seats(
+		(
+			SELECT Booking.flight FROM Booking
+			WHERE Booking.id = booking
+		),
+		(
+			SELECT COUNT(*) FROM Passenger
+			WHERE Passenger.booking = booking
+		)+extra
+	);
+END //
 CREATE PROCEDURE create_reservation
 (IN flight INT)
 BEGIN
@@ -37,18 +54,14 @@ CREATE PROCEDURE add_passenger
 	IN booking INT, name VARCHAR(256), birth DATE,
 	OUT passenger INT)
 BEGIN
-	IF check_seats((
-		SELECT Flight.id FROM Booking
-		JOIN Flight
-		ON Flight.id = Booking.flight
-		WHERE Booking.id = booking
-		), 1) THEN
+	IF check_booking_seats(booking, 1) AND (SELECT payment FROM Booking WHERE id = booking) IS NULL THEN
 		INSERT INTO Passenger(fullname, birthdate, booking)
 		VALUES(name, birth, booking);
 		SET passenger = LAST_INSERT_ID();
 	ELSE
 		SET passenger = -1;
 	END IF;
+
 END //
 
 CREATE PROCEDURE add_contact
@@ -79,17 +92,7 @@ BEGIN
 		WHERE Booking.id = booking AND Passenger.booking = booking
 		) IS NOT NULL
 		AND
-		check_seats((
-				SELECT Flight.id FROM Booking
-				JOIN Flight
-				ON Flight.id = Booking.flight
-				WHERE Booking.id = booking
-			),
-			(
-				SELECT COUNT(*) FROM Passenger
-				WHERE Passenger.booking = booking
-			)
-		)
+		check_booking_seats(booking, 0)
 		THEN
 		INSERT INTO Payment ( card_holder, card_number, card_expiry, amount)
 		VALUES              ( card_holder, card_number, card_expiry, amount);

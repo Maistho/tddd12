@@ -32,3 +32,4 @@ Airport,
 Airplane,
 AirplaneModel,
 WeekdayPriceFactor;
+test
