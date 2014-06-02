@@ -1,4 +1,4 @@
-
+# Drop all tables
 ALTER TABLE Airplane
 DROP FOREIGN KEY fk_Airplane_model;
 
@@ -33,3 +33,5 @@ Airplane,
 AirplaneModel,
 WeekdayPriceFactor;
 test
+
+

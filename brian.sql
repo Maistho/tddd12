@@ -1,3 +1,4 @@
+# Create all tables and views
 CREATE TABLE AirplaneModel
 (
 	id INT NOT NULL AUTO_INCREMENT,
@@ -147,3 +148,5 @@ JOIN Airport AS Destination
 ON Destination.id = Route.destination
 JOIN Airport AS Departure
 ON Departure.id = Route.departure;
+
+

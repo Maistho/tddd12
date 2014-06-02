@@ -1,3 +1,4 @@
+# Insert test data
 INSERT INTO Airport(name, short_name)
 VALUES('Arlanda', 'ARN');
 INSERT INTO Airport(name, short_name)
@@ -97,3 +98,5 @@ VALUES
 	),
 	(SELECT MAX(id) FROM Airplane)
 );
+
+

@@ -1,4 +1,4 @@
-# Drop all tables and foreign keys
+# Drop all tables
 ALTER TABLE Airplane
 DROP FOREIGN KEY fk_Airplane_model;
 
@@ -32,10 +32,10 @@ Airport,
 Airplane,
 AirplaneModel,
 WeekdayPriceFactor;
+test
 
 
 # Create all tables and views
-
 CREATE TABLE AirplaneModel
 (
 	id INT NOT NULL AUTO_INCREMENT,
@@ -175,11 +175,7 @@ ON Passenger.booking = Booking.id
 GROUP BY Flight.id;
 
 CREATE VIEW FlightSearch AS
-SELECT Seats.id,
-	Seats.available_seats,
-	Destination.short_name AS destination,
-	Departure.short_name AS departure,
-	Flight.departure_datetime
+SELECT Seats.id, Seats.available_seats, Destination.short_name AS destination, Departure.short_name AS departure, Flight.departure_datetime
 FROM Seats
 JOIN Flight
 ON Flight.id = Seats.id
@@ -190,8 +186,8 @@ ON Destination.id = Route.destination
 JOIN Airport AS Departure
 ON Departure.id = Route.departure;
 
-# Create procedures
 
+# Add procedures
 DROP PROCEDURE IF EXISTS create_reservation;
 DROP PROCEDURE IF EXISTS add_passenger;
 DROP PROCEDURE IF EXISTS add_contact;
@@ -248,10 +244,7 @@ CREATE PROCEDURE add_passenger
 	IN booking INT, name VARCHAR(256), birth DATE,
 	OUT passenger INT)
 BEGIN
-	IF check_booking_seats(booking, 1) AND
-		(
-			SELECT payment FROM Booking WHERE id = booking
-		) IS NULL THEN
+	IF check_booking_seats(booking, 1) AND (SELECT payment FROM Booking WHERE id = booking) IS NULL THEN
 		INSERT INTO Passenger(fullname, birthdate, booking)
 		VALUES(name, birth, booking);
 		SET passenger = LAST_INSERT_ID();
@@ -292,7 +285,17 @@ BEGIN
 		check_booking_seats(booking, 0)
 		THEN
 		INSERT INTO Payment ( card_holder, card_number, card_expiry, amount)
-		VALUES              ( card_holder, card_number, card_expiry, amount);
+		VALUES              ( card_holder, card_number, card_expiry,
+		(
+			SELECT price*(
+				SELECT COUNT(Passenger.id) FROM Passenger
+				WHERE Passenger.booking = booking)
+			FROM FlightPrices
+			WHERE id = (
+				SELECT flight FROM Booking
+				WHERE id = booking)
+		)
+		);
 		UPDATE Booking
 		SET payment = LAST_INSERT_ID()
 		WHERE id = booking;
@@ -318,12 +321,10 @@ BEGIN
 END //
 
 
-
 DELIMITER ;
 
 
 # Create triggers
-
 DROP FUNCTION IF EXISTS generate_ticket;
 DROP TRIGGER IF EXISTS add_ticket;
 
@@ -357,14 +358,13 @@ BEGIN
 		SET ticket_number = CONCAT(@booking_ticket, LPAD((@i := @i + ),2,'0'))
 		WHERE Passenger.booking = NEW.id;
 	END IF;
-END //
 
+END //
 
 DELIMITER ;
 
 
-# Insert test data into the tables
-
+# Insert test data
 INSERT INTO Airport(name, short_name)
 VALUES('Arlanda', 'ARN');
 INSERT INTO Airport(name, short_name)
@@ -464,3 +464,5 @@ VALUES
 	),
 	(SELECT MAX(id) FROM Airplane)
 );
+
+

@@ -1,3 +1,4 @@
+# Add procedures
 DROP PROCEDURE IF EXISTS create_reservation;
 DROP PROCEDURE IF EXISTS add_passenger;
 DROP PROCEDURE IF EXISTS add_contact;
@@ -131,5 +132,6 @@ BEGIN
 END //
 
 
-
 DELIMITER ;
+
+

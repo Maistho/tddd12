@@ -1,3 +1,4 @@
+# Create triggers
 DROP FUNCTION IF EXISTS generate_ticket;
 DROP TRIGGER IF EXISTS add_ticket;
 
@@ -23,15 +24,17 @@ CREATE TRIGGER add_ticket
 AFTER UPDATE
 ON Booking
 FOR EACH ROW
-	BEGIN
-		IF OLD.payment <> NEW.payment THEN
-			SET @i = 0;
-			SET @booking_ticket = generate_ticket(NEW.flight, NEW.id);
-			UPDATE Passenger
-			SET ticket_number = CONCAT(@booking_ticket, LPAD((@i := @i + ),2,'0'))
-			WHERE Passenger.booking = NEW.id;
-		END IF;
+BEGIN
+	IF OLD.payment <> NEW.payment THEN
+		SET @i = 0;
+		SET @booking_ticket = generate_ticket(NEW.flight, NEW.id);
+		UPDATE Passenger
+		SET ticket_number = CONCAT(@booking_ticket, LPAD((@i := @i + ),2,'0'))
+		WHERE Passenger.booking = NEW.id;
+	END IF;
 
-	END //
+END //
 
-	DELIMITER ;
+DELIMITER ;
+
+
