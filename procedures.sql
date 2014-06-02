@@ -95,7 +95,17 @@ BEGIN
 		check_booking_seats(booking, 0)
 		THEN
 		INSERT INTO Payment ( card_holder, card_number, card_expiry, amount)
-		VALUES              ( card_holder, card_number, card_expiry, amount);
+		VALUES              ( card_holder, card_number, card_expiry,
+		(
+			SELECT price*(
+				SELECT COUNT(Passenger.id) FROM Passenger
+				WHERE Passenger.booking = booking)
+			FROM FlightPrices
+			WHERE id = (
+				SELECT flight FROM Booking
+				WHERE id = booking)
+		)
+		);
 		UPDATE Booking
 		SET payment = LAST_INSERT_ID()
 		WHERE id = booking;
