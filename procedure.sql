@@ -43,6 +43,22 @@ BEGIN
 		)+extra
 	);
 END //
+
+CREATE FUNCTION calc_price
+(booking INT)
+RETURNS INT
+READS SQL DATA
+BEGIN
+	RETURN (
+		SELECT price*(
+			SELECT COUNT(Passenger.id) FROM Passenger
+			WHERE Passenger.booking = booking)
+		FROM FlightPrices
+		WHERE id = (
+			SELECT flight FROM Booking
+			WHERE id = booking)
+	);
+END //
 CREATE PROCEDURE create_reservation
 (IN flight INT)
 BEGIN
@@ -96,16 +112,9 @@ BEGIN
 		check_booking_seats(booking, 0)
 		THEN
 		INSERT INTO Payment ( card_holder, card_number, card_expiry, amount)
-		VALUES              ( card_holder, card_number, card_expiry,
-		(
-			SELECT price*(
-				SELECT COUNT(Passenger.id) FROM Passenger
-				WHERE Passenger.booking = booking)
-			FROM FlightPrices
-			WHERE id = (
-				SELECT flight FROM Booking
-				WHERE id = booking)
-		)
+		VALUES              ( card_holder, card_number, card_expiry, (
+			CALL calc_price(booking)
+			)
 		);
 		UPDATE Booking
 		SET payment = LAST_INSERT_ID()
@@ -130,7 +139,6 @@ BEGIN
 	AND FlightSearch.available_seats >= no_passengers
 	AND DATE(FlightSearch.departure_datetime) = flight_date;
 END //
-
 
 DELIMITER ;
 
