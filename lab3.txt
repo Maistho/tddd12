@@ -1,0 +1,46 @@
+1a:
+	A -> C
+	A,B -> D
+	Primary Key (A,B)
+
+1b:
+	A,B -> C
+	C -> D
+	Primary Key (A,B)
+
+1c:
+	A,B -> C
+	D -> A
+	Primary Key (A,B)
+
+2a:
+	AB->C
+	AB->C,D
+
+2b:
+
+
+2c:
+
+
+2d:
+
+
+3a:
+	1NF
+
+3b:
+	2NF:
+		BOOK(Title#, Author#)
+		TITLE(Title#, Title, BookType, Price, Publisher)
+		AUTHOR(Author#, AuthorName)
+	3NF:
+		BOOK(Title#, Author#)
+		TITLE(Title#, Title, BookType, Publisher)
+		AUTHOR(Author#, AuthorName)
+		PRICES(BookType, Price)
+	BCNF:
+		BOOK(Title#, Author#)
+		TITLE(Title#, Title, BookType, Publisher)
+		AUTHOR(Author#, AuthorName)
+		PRICES(BookType, Price)

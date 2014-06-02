@@ -1,0 +1,16 @@
+2.
+	All tables are in BCNF.
+	An index would be useful for the Flight table, to allow searches of flights to be faster. Since we rarely write to that table, but read really often, it would be a significant performance boost. We would index the departure dates and the locations, since that is what would be searched for most often.
+
+	The Airplane table is meant to contain specific airplanes owned by the company
+	The Airplane Model table is meant to contain airplane model specifications, such as the number of seats and model name.
+	The Flight table is meant to contain information about a specific flight, such as destination and flight code.
+	The Route table is meant to contain information about a route, such as the price and destination.
+	The Airport table is meant to contain information about an airport.
+	The Booking table is meant to contain data from a booking. If the payment_id is NULL, the booking has not yet been paid for.
+	The Payment table is meant to contain data neccessary to perform a payment. The price is the total sum of all tickets in the associated booking.
+	The Passenger table is meant to contain the information needed for a passenger.
+	The Contact table is a subclass of Passenger, and contains the additional contact information needed.
+	The Weekday price factor table maps weekdays to price factors.
+
+	We felt that using a weekly schedule table would be an unneccessary constraint, and would also make the database more complicated. The weekly schedule should, in our opinion, not be handled by the database itself, but rather by the client adding new flights to the database. To implement similar functionality in our proposed model, one would only have to change what flights are added to the database when adding new flights.
