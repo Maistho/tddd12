@@ -149,4 +149,22 @@ ON Destination.id = Route.destination
 JOIN Airport AS Departure
 ON Departure.id = Route.departure;
 
+CREATE VIEW FlightPrices AS
+SELECT (
+	Route.price_factor * WeekdayPriceFactor.price_factor * (
+		Seats.available_seats + 1
+	) / AirplaneModel.seats * 1.2
+) AS price,
+Flight.id AS id
+FROM Flight
+JOIN Route
+ON Route.id = Flight.route
+JOIN WeekdayPriceFactor
+ON WeekdayPriceFactor.weekday = DAY(Flight.departure_datetime)
+JOIN Seats
+ON Seats.id = Flight.id
+JOIN Airplane
+ON Airplane.id = Flight.airplane
+JOIN AirplaneModel
+ON AirplaneModel.id = Airplane.model;
 
