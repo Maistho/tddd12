@@ -24,7 +24,7 @@ VALUES
 INSERT INTO AirplaneModel(seats, name)
 VALUES(140, 'Boing 474');
 INSERT INTO AirplaneModel(seats, name)
-VALUES(180, 'Boing 313');
+VALUES(60, 'Boing 313');
 
 INSERT INTO Airplane(model)
 VALUES
